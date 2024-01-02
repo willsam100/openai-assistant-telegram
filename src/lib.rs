@@ -107,8 +107,8 @@ async fn run_message(thread_id: &str, text: String) -> String {
         .id;
 
     let mut result = Some("Timeout");
-    for _ in 0..5 {
-        tokio::time::sleep(std::time::Duration::from_secs(8)).await;
+    for _ in 0..50 {
+        tokio::time::sleep(std::time::Duration::from_secs(1)).await;
         let run_object = client
             .threads()
             .runs(&thread_id)
