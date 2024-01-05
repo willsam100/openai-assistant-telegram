@@ -90,7 +90,7 @@ async fn delete_thread(thread_id: &str) {
     }
 }
 
-async fn run_message(thread_id: &str, text: String, system_prompt: string) -> String {
+async fn run_message(thread_id: &str, text: String, system_prompt: String) -> String {
     let client = Client::new();
     let assistant_id = std::env::var("ASSISTANT_ID").unwrap();
 
