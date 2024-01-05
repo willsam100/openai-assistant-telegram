@@ -98,7 +98,7 @@ async fn run_message(thread_id: &str, text: String, system_prompt: String) -> St
     create_message_request.content = text;
 
     create_message_request.role = "system".to_string();
-    create_message_request.content = system_prompt;
+    create_message_request.content = system_prompt.to_string();
     
 
     client
