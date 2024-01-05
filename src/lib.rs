@@ -56,7 +56,7 @@ async fn handler(update: tg_flows::Update) {
             Expalain the Korean grammer concepts when translating. 
             Explain mistakes if given an incorrect answer and the correct anser. ";
 
-        let response = run_message(thread_id.as_str(), String::from(text), Some(system_prompt)).await;
+        let response = run_message(thread_id.as_str(), String::from(text), system_prompt).await;
         _ = tele.send_message(chat_id, response);
     }
 }
@@ -90,17 +90,16 @@ async fn delete_thread(thread_id: &str) {
     }
 }
 
-async fn run_message(thread_id: &str, text: String, system_prompt: Option<string>) -> String {
+async fn run_message(thread_id: &str, text: String, system_prompt: string) -> String {
     let client = Client::new();
     let assistant_id = std::env::var("ASSISTANT_ID").unwrap();
 
     let mut create_message_request = CreateMessageRequestArgs::default().build().unwrap();
     create_message_request.content = text;
 
-    if let Some(sys_prompt) = system_prompt {
-        create_message_request.role = "system".to_string();
-        create_message_request.content = sys_prompt;
-    }
+    create_message_request.role = "system".to_string();
+    create_message_request.content = sys_prompt;
+    
 
     client
         .threads()
