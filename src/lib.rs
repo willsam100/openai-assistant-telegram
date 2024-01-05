@@ -8,6 +8,7 @@ use async_openai::{
 use flowsnet_platform_sdk::logger;
 use tg_flows::{listen_to_update, update_handler, Telegram, UpdateKind};
 
+
 #[no_mangle]
 #[tokio::main(flavor = "current_thread")]
 pub async fn on_deploy() {
@@ -15,8 +16,17 @@ pub async fn on_deploy() {
 
     // create_thread().await;
 
-    let telegram_token = std::env::var("telegram_token").unwrap();
-    listen_to_update(telegram_token).await;
+    let telegram_token = std::env::var("telegram_token"); // .unwrap();
+
+    match telegram_token {
+        Ok(token) => {
+            listen_to_update(telegram_token).await;
+        } 
+        Err(e) => {
+            logger::error(format!("Error: {}", e));
+            panic!("Error: {}", e);
+        }
+    }
 }
 
 #[update_handler]
@@ -49,7 +59,13 @@ async fn handler(update: tg_flows::Update) {
             }
         };
 
-        let response = run_message(thread_id.as_str(), String::from(text)).await;
+        let system_prompt = "
+            You're an expert Korean Teacher. 
+            Translate english to korean, and vice versa. 
+            Expalain the Korean grammer concepts when translating. 
+            Explain mistakes if given an incorrect answer and the correct anser. ";
+
+        let response = run_message(thread_id.as_str(), String::from(text), Some(system_prompt)).await;
         _ = tele.send_message(chat_id, response);
     }
 }
@@ -83,12 +99,18 @@ async fn delete_thread(thread_id: &str) {
     }
 }
 
-async fn run_message(thread_id: &str, text: String) -> String {
+async fn run_message(thread_id: &str, text: String, system_prompt: Option<string>) -> String {
     let client = Client::new();
     let assistant_id = std::env::var("ASSISTANT_ID").unwrap();
 
     let mut create_message_request = CreateMessageRequestArgs::default().build().unwrap();
     create_message_request.content = text;
+
+    if let Some(system_prompt) = system_prompt {
+        create_message_request.role = Some("system".to_owned());
+        create_message_request.content = system_prompt;
+    }
+
     client
         .threads()
         .messages(&thread_id)
