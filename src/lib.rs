@@ -16,17 +16,8 @@ pub async fn on_deploy() {
 
     // create_thread().await;
 
-    let telegram_token = std::env::var("telegram_token"); // .unwrap();
-
-    match telegram_token {
-        Ok(token) => {
-            listen_to_update(telegram_token).await;
-        } 
-        Err(e) => {
-            logger::error(format!("Error: {}", e));
-            panic!("Error: {}", e);
-        }
-    }
+    let telegram_token = std::env::var("telegram_token").unwrap();
+    listen_to_update(telegram_token).await;
 }
 
 #[update_handler]
