@@ -97,8 +97,8 @@ async fn run_message(thread_id: &str, text: String, system_prompt: String) -> St
     let mut create_message_request = CreateMessageRequestArgs::default().build().unwrap();
     create_message_request.content = text;
 
-    create_message_request.role = "system".to_string();
-    create_message_request.content = system_prompt;
+    // create_message_request.role = "system".to_string();
+    // create_message_request.content = system_prompt;
     
 
     client
