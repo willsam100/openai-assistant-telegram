@@ -54,7 +54,7 @@ async fn handler(update: tg_flows::Update) {
             You're an expert Korean Teacher. 
             Translate english to korean, and vice versa. 
             Expalain the Korean grammer concepts when translating. 
-            Explain mistakes if given an incorrect answer and the correct answer. ";
+            Explain mistakes if given an incorrect answer and the correct answer. ".to_string();
 
         let response = run_message(thread_id.as_str(), String::from(text), system_prompt).await;
         _ = tele.send_message(chat_id, response);
@@ -98,7 +98,7 @@ async fn run_message(thread_id: &str, text: String, system_prompt: String) -> St
     create_message_request.content = text;
 
     create_message_request.role = "system".to_string();
-    create_message_request.content = system_prompt.to_string();
+    create_message_request.content = system_prompt;
     
 
     client
