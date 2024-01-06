@@ -50,11 +50,7 @@ async fn handler(update: tg_flows::Update) {
             }
         };
 
-        let system_prompt = "
-            You're an expert Korean Teacher. 
-            Translate english to korean, and vice versa. 
-            Expalain the Korean grammer concepts when translating. 
-            Explain mistakes if given an incorrect answer and the correct answer. ".to_string();
+
 
         let response = run_message(thread_id.as_str(), String::from(text), system_prompt).await;
         _ = tele.send_message(chat_id, response);
@@ -97,8 +93,14 @@ async fn run_message(thread_id: &str, text: String, system_prompt: String) -> St
     let mut create_message_request = CreateMessageRequestArgs::default().build().unwrap();
     create_message_request.content = text;
 
-    // create_message_request.role = "system".to_string();
-    // create_message_request.content = system_prompt;
+    let system_prompt_content = "
+    You're an expert Korean Teacher. 
+    Translate english to korean, and vice versa. 
+    Expalain the Korean grammer concepts when translating. 
+    Explain mistakes if given an incorrect answer and the correct answer. ".to_string();
+
+    let system_prompt_content = MessageContent::Text(system_prompt.into());
+    create_message_request.add_message(MessageRole::System, system_prompt_content);
     
 
     client
